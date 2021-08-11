@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GAlgorithms {
     class GeneticAlgorithm {
 
-        private List<Knapsack> bags;
+        private List<Item> items;
         private List<Individual> pop; //population that is going to evolve with time
         private List<double> fitnesses = new List<double>(); //fitness of every individual in the population
         private int popSize;
@@ -16,8 +16,8 @@ namespace GAlgorithms {
         private double capacity; //max weight that can be carried
         private Random rand = new Random();
 
-        public GeneticAlgorithm(List<Knapsack> bags, int popSize, int nbGen, double mutationProba, double capacity) {
-            this.bags = bags;
+        public GeneticAlgorithm(List<Item> items, int popSize, int nbGen, double mutationProba, double capacity) {
+            this.items = items;
             this.popSize = popSize;
             this.nbGen = nbGen;
             this.mutationProba = mutationProba;
@@ -91,9 +91,9 @@ namespace GAlgorithms {
             List<Individual> pop = new List<Individual>(popSize);
 
             for (int i = 0; i < popSize; ++i) { //generate n individuals
-                pop.Add(new Individual(bags));
-                for (int j = 0; j < bags.Count(); ++j) { //adding one by one a random bit
-                    pop[i].AddKnapsackValue(rand.Next(0, 2));
+                pop.Add(new Individual(items));
+                for (int j = 0; j < items.Count(); ++j) { //adding one by one a random bit
+                    pop[i].AddItemValue(rand.Next(0, 2));
                 }
             }
 
@@ -223,8 +223,8 @@ namespace GAlgorithms {
                 }
             }
 
-            Individual child1 = new Individual(bags, child1Sol);
-            Individual child2 = new Individual(bags, child2Sol);
+            Individual child1 = new Individual(items, child1Sol);
+            Individual child2 = new Individual(items, child2Sol);
             return (child1, child2);
         }
 
@@ -239,16 +239,16 @@ namespace GAlgorithms {
                 if (showProcess)
                     Console.WriteLine("mutation\n");
 
-                int indexToChange = rand.Next(0, bags.Count);
+                int indexToChange = rand.Next(0, items.Count);
                 while(ind1.GetSolution()[indexToChange] == 1) {
-                    indexToChange = rand.Next(0, bags.Count);
+                    indexToChange = rand.Next(0, items.Count);
                 }
 
                 ind1.GetSolution()[indexToChange] = 1; //(ind1.GetSolution()[indexToChange] + 1) % 2;
                 
-                indexToChange = rand.Next(0, bags.Count);
+                indexToChange = rand.Next(0, items.Count);
                 while (ind2.GetSolution()[indexToChange] == 1) {
-                    indexToChange = rand.Next(0, bags.Count);
+                    indexToChange = rand.Next(0, items.Count);
                 }
                 ind2.GetSolution()[indexToChange] = 1; // (ind2.GetSolution()[indexToChange] + 1) % 2;
             }
@@ -257,7 +257,7 @@ namespace GAlgorithms {
 
         private void ShowBestIndividual(Individual bestIndiviual) {
             /*
-             Show which bags were chosen by the solution, its fitness, its weight ratio
+             Show which items were chosen by the solution, its fitness, its weight ratio
              */
             List<int> bestSolution = bestIndiviual.GetSolution();
             Console.WriteLine("\n______________________________________________");
@@ -268,15 +268,15 @@ namespace GAlgorithms {
                 double usedWeight = 0, totalWeight = 0, valueSum = 0, bestCaseFitness = 0;
                 for (int i = 0; i < bestSolution.Count; ++i) {
                     if (bestSolution[i] == 1) {
-                        Console.WriteLine(bags[i].ToString() + " X"); //choosen values are marked with an 'X'
-                        usedWeight += bags[i].GetWeight();
-                        valueSum += bags[i].GetValue();
+                        Console.WriteLine(items[i].ToString() + " X"); //choosen values are marked with an 'X'
+                        usedWeight += items[i].GetWeight();
+                        valueSum += items[i].GetValue();
                     }
                     else {
-                        Console.WriteLine(bags[i].ToString());
-                        totalWeight += bags[i].GetWeight();
+                        Console.WriteLine(items[i].ToString());
+                        totalWeight += items[i].GetWeight();
                     }
-                    bestCaseFitness += bags[i].GetValue();
+                    bestCaseFitness += items[i].GetValue();
 
                 }
                 totalWeight += usedWeight;
